@@ -1,0 +1,33 @@
+import nltk
+from nltk import word_tokenize, ngrams
+from collections import Counter, defaultdict
+import random
+
+corpus = """This is an assignment in natural language processing about unigrams,bigrams and trigrams."""
+
+tokens = word_tokenize(corpus.lower())
+
+unigrams = tokens
+print("Unigrams:", unigrams)
+
+bigrams = list(ngrams(tokens, 2))
+print("Bigrams:", bigrams)
+
+trigrams = list(ngrams(tokens, 3))
+print("Trigrams:", trigrams)
+
+bigram_counts = Counter(bigrams)
+unigram_counts = Counter(unigrams)
+bigram_probabilities = {bigram: count / unigram_counts[bigram[0]] for bigram, count in bigram_counts.items()}
+print("Bigram Probabilities:", bigram_probabilities)
+
+def predict_next_word(prev_word):
+    possible_bigrams = {bigram: prob for bigram, prob in bigram_probabilities.items() if bigram[0] == prev_word}
+    if not possible_bigrams:
+        return None
+    next_word = max(possible_bigrams, key=possible_bigrams.get)[1]
+    return next_word
+
+previous_word = "bigrams"
+predicted_word = predict_next_word(previous_word)
+print(f"Next word prediction for '{previous_word}': {predicted_word}")
